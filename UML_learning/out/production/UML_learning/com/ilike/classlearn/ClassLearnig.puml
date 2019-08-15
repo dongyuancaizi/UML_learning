@@ -1,0 +1,156 @@
+@startuml
+/'
+  类图
+'/
+interface Fly
+abstract class Animal
+enum ZooEnum
+class Cat
+class Eagle
+class Person
+class Child
+class Car
+class Wheel
+class Leg
+
+/'类与类关系'/
+
+
+
+
+/'Cat extends Animal
+泛化
+泛化指父类跟子类的关系,表示is-a的关系。如父类是抽象类或普通类，则这种关系叫继承。如，父类是接口，则这种关系叫实现。UML中，继承和实现由不同的标记表示。
+继承
+PlantUML用 --|> 表示继承关系。实线和三角形的抽象表示，指向谁，即继承谁
+'/
+Animal <|-- Cat
+/'Eagle  extends Animal'/
+Animal <|-- Eagle
+
+
+
+/'Eagle  implements Fly
+  实现
+  PlantUML用 ..|> 表示实现关系。虚和三角形的抽象表示，指向谁，即实现谁
+'/
+Fly <|.. Eagle
+
+
+
+/'Person依赖Cat'/
+/'依赖
+  类之间，最弱的关联方式。常用于在A类的方法中使用B类的对象作为参数、局部变量或者对B类静态方法的调用。
+  PlantUML用 ..> 表示依赖关系。虚线和箭头的抽象表示，指向谁，即依赖谁'/
+ZooEnum <.. Person
+
+
+/'Person关联Cat'/
+/'关联
+  关联关系，即对象之间的引用关系。常使用类的属性表达。
+  单向关联
+  B类作为A类的属性，表示A类与B类有关联。
+  PlantUML用 --> 表示单向关联。实线线和箭头的抽象表示，指向谁，即关联谁。'/
+Cat <-- Person
+
+
+
+/'Person与Child双向关联'/
+/'双向关联
+  B类作为A类的属性同时，A类也是B类的属性，表示双向关联。
+  PlantUML用 -- 表示双向关联。或者用<-->。'/
+Child <--> Person
+
+
+
+/'聚合'/
+/'聚合
+  在关联关系的基础上，延伸出聚合关系，强的关联关系，表示has-a关系。整体与部分的关系，部分不依赖于整体，可独立存在。常用于成员变量。
+
+  如；汽车和轮胎的关系，轮胎可作为独立的商品出售。
+
+  PlantUML用 o-- 表示聚合关系。实线和空心菱形的抽象表示，指向谁，表示谁是整体。'/
+Car "1" o-- "4" Wheel
+/'Person关联Car'/
+Car <-- Person
+
+
+
+/'组合关系'/
+/'在关联关系的基础上，延伸出另外一种关联关系，组合关系，表示contains-a关系。整体与部分的关系，部分依赖于整体，不可独立存在。常用于成员变量。
+  如：人和腿的关系。
+  PlantUML用 *-- 表示聚合关系。实线和实心菱形的抽象表示，指向谁，表示谁是整体。'/
+Person "1" *-- "2" Leg
+
+
+
+
+
+
+
+
+/'飞的接口'/
+interface Fly{
+   void fly()
+}
+/'抽象动物类'/
+abstract class Animal{
+   void eat()
+   void sleep()
+}
+/'Cat类'/
+class Cat{
+    void eat()
+    void sleep()
+}
+/'Eagle类'/
+class Eagle{
+    void eat()
+    void sleep()
+    void fly()
+}
+/'Person类'/
+class Person{
+  String name
+  String age
+  Integer gender
+  Cat cat
+  List<Child> childs
+  void visit(ZooEnum zooEnum)
+}
+
+/'Child类'/
+class Child{
+  String name
+  String age
+  Integer gender
+  Person parent
+}
+
+/'ZooEnum枚举'/
+enum ZooEnum{
+     CAT(1, "猫"),
+    EAGLE(2, "老鹰");
+}
+/'Car类'/
+class Car{
+  String color
+  String brand
+  List<Wheel> wheels
+}
+
+/'Wheel类'/
+class Wheel{
+  Integer size
+  Integer weight
+}
+/'Leg类'/
+class Leg {
+   Integer length;
+}
+
+
+
+
+
+@enduml

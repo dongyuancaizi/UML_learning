@@ -17,7 +17,7 @@ public class Person {
     /**
      * 年龄
      */
-    private String age;
+    private Integer age;
     /**
      * 性别
      */
@@ -56,11 +56,11 @@ public class Person {
         this.name = name;
     }
 
-    public String getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(String age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 
