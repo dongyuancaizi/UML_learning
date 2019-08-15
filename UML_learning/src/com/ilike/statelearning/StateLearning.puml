@@ -1,0 +1,113 @@
+@startuml
+
+Title 停车场订单状态流转
+
+/'正常状态'/
+state normal{
+      normal:正常状态
+
+    [*] -down-> createOrder:车辆进场
+    createOrder:由进场记录(车牌识别，卡片)产生，同步系统同步
+
+    createOrder -down-> freeTime:进场免费时长
+    freeTime:进场免费时长,若车场允许,\n车辆可直接出场
+
+    freeTime -left-> freeTime_out:车场要求0元支付离场
+    freeTime_out:出场限时免费
+
+    freeTime -right-> billing:进场免费停车超时
+    billing:计费中,等候计费线程刷新\n刷新时需考虑计费终止订单
+
+    freeTime-down->settled:车辆出场
+    settled:已结算
+
+    freeTime_out-down->settled:车辆出场
+
+    freeTime_out -right-> billing:超时
+
+
+    billing-down->billingHangs:进入支付流程
+
+
+    /'计费挂起'/
+        state billingHangs{
+              billingHangs:计费挂起,暂时停止计费\nAPP、微信、传感器感应等引起
+
+            [*] -> wait_app_pay:generateAppPayLog
+            wait_app_pay:等待app支付
+            generateAppPayLog:产生APP支付记录
+
+            wait_app_pay->app_pay_success
+            app_pay_success:APP支付成功
+
+            wait_app_pay->app_pay_timeout
+            app_pay_timeout:APP支付超时
+
+            --
+
+            [*] -> wait_wx_pay: generateWxPayLog
+            wait_wx_pay:等待微信支付
+            generateWxPayLog:产生微信支付记录
+
+            wait_wx_pay->wx_pay_success
+            wx_pay_success:微信支付成功
+
+            wait_wx_pay->wx_pay_timeout
+            wx_pay_timeout:微信支付超时
+
+            --
+
+            [*] -> wait_cash_pay:generateCashPayLog
+            wait_cash_pay:等待现金支付
+            generateCashPayLog:产生现金支付记录
+
+            wait_cash_pay->cash_pay_success
+            cash_pay_success:现金支付成功,月租卡等无需缴费
+
+            wait_cash_pay->cash_pay_timeout
+            cash_pay_timeout:现金支付超时
+
+            --
+
+            [*] -> wait_automatic_deduction:generateAutomaticDeductionLog
+            wait_automatic_deduction:等待自动扣款,预约进场；浦发免密支付
+            generateAutomaticDeductionLog:产自动扣费记录
+
+            wait_automatic_deduction->automatic_deduction_success
+            automatic_deduction_success:自动扣费成功
+
+            wait_automatic_deduction->automatic_deduction_timeout
+            automatic_deduction_timeout:自动扣费超时
+
+        }
+
+     billing-down->settled:人工离场
+     settled:已结算的订单移入历史表中，避免再次处理；
+
+     billingHangs-left->freeTime_out:缴费成功
+
+     billingHangs-up->billing:缴费超时(APP、微信、现金)
+
+}
+
+/'exception:异常状态'/
+
+state exception{
+      exception:异常状态
+
+  billing-right->billing_suspension:车辆重新进场
+
+  billing_suspension:旧订单进入这个状态，等待人工处理；\n新订单照常发起
+
+  billing_suspension-left->settled:人工确认
+
+  billing_suspension-down->waiting_for_additional:人工确认
+  waiting_for_additional:需要补交费用
+
+  waiting_for_additional-left->settled:缴费成功
+
+  billingHangs-down->waiting_for_additional:自动扣费失败
+
+
+}
+@enduml

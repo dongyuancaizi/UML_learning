@@ -1,0 +1,65 @@
+@startuml
+  /'
+     时序图
+
+     展示小明从在京东app挑选商品到下单到支付完成发货的整个周期时序图
+  '/
+  /'scale 1024 width'/
+  Title 京东商城购物流程图
+
+
+小明 -> 京东商城APP : 1.小明打开京东商城app
+
+京东商城APP -> 京东商城APP : 2.选择商品下单
+
+京东商城APP -> 京东Server : 3.请求生成支付订单
+
+京东Server -> 微信支付Server: 4.调用统一下单API
+
+微信支付Server -> 微信支付Server: 生成预支付订单
+
+微信支付Server --> 京东Server: 5.返回预支付订单(prePayId)
+
+京东Server -> 京东Server : 6.生成带签名的客户端支付信息
+
+京东Server --> 京东商城APP : 7.返回信息（prePayId,sign等）
+
+小明 -> 京东商城APP: 8.确认支付
+
+京东商城APP -> 微信APP : 9.通过参数调起微信支付
+
+微信APP -> 微信支付Server : 10.发起支付请求
+
+微信支付Server -> 微信支付Server : 验证支付参数,APP支付权限
+
+微信支付Server --> 微信APP : 11.返回需要支付授权
+
+小明 -> 微信APP : 12.用户确认支付，输入支付密码
+
+微信APP -> 微信支付Server :13.提交支付授权
+
+微信支付Server -> 微信支付Server : 确认授权,完成交易
+
+微信支付Server --> 微信APP :14 返回支付结果,发送微信消息提示
+
+微信支付Server -> 京东Server :15 异步通知商户支付结果
+
+京东Server -> 京东Server : 接收和保存支付通知
+
+京东Server --> 微信支付Server : 16 返回告知已成功接收处理
+
+微信APP -> 京东商城APP  : 将支付状态通过京东app已实现的回调接口执行回调
+
+京东商城APP -> 京东Server :后台查询实际支付结果
+
+京东Server -> 京东商城APP : 返回支付结果
+
+京东商城APP --> 小明 : 展示支付结果
+
+京东商城APP ->京东商城APP : 商户发货
+
+
+
+
+
+@enduml
