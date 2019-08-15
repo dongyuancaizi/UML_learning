@@ -27,4 +27,35 @@ public class Child {
      */
     private Person parent;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public Integer getGender() {
+        return gender;
+    }
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
+    }
+
+    public Person getParent() {
+        return parent;
+    }
+
+    public void setParent(Person parent) {
+        this.parent = parent;
+    }
 }

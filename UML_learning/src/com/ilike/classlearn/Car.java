@@ -22,6 +22,29 @@ public class Car {
      */
     private List<Wheel> wheels;
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public List<Wheel> getWheels() {
+        return wheels;
+    }
+
+    public void setWheels(List<Wheel> wheels) {
+        this.wheels = wheels;
+    }
 }
 
 
