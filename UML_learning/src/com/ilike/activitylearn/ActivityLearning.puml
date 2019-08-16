@@ -1,0 +1,32 @@
+@startuml
+
+title 客户预定房间活动图
+start
+#HotPink:预订方式;
+if(前台订购?)then (yes)
+           :员工登记客户信息;
+         else if(网上订购?)then (yes)
+           :客户网上填写信息;
+         else (nothing)
+             :电话订购;
+             :员工登记客户信息;
+ endif
+ #00a900:客户预定房间;
+ :确定房间数量;
+ :生成订单;
+ :客户确定订单;
+stop
+
+
+
+
+
+/'(*)  --> "check input"
+If "input is verbose" then
+--> [Yes] "turn on verbosity"
+--> "run command"
+else
+--> "run command"
+Endif
+-->(*)'/
+@enduml

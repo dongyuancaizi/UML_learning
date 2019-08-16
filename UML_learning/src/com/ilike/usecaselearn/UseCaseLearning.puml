@@ -1,0 +1,83 @@
+@startuml
+
+title 酒店客房预订系统用例图
+
+/'系统所有角色'/
+actor :用户: as user<<user>>
+note left of user : 这是平台的主要访问者(普通用户).
+actor :平台管理员: as platformManager<<admin>>
+actor :酒店管理员: as hotelManager<<manager>>
+actor :管理员: as manager<<manager>>
+note "普通的酒店管理员" as m
+m ..manager
+
+/'默认从左往右构建图示'/
+left to right direction
+
+/'对于全局的用例进行样式设置'/
+skinparam usecase{
+	BackgroundColor DarkSeaGreen
+	BorderColor DarkSlateGray
+
+	BackgroundColor<< Main >> YellowGreen
+	BorderColor<< Main >> YellowGreen
+	BackgroundColor<<weight1>> red
+
+    /'箭头的颜色'/
+	ArrowColor Olive
+	ActorBorderColor black
+	ActorFontName Courier
+
+	ActorBackgroundColor Gold
+}
+/'对于全局的角色进行样式设置'/
+skinparam actor{
+   BorderColor<<user>> orange
+   BorderColor<<manager>> blue
+   BorderColor<<admin>> red
+}
+
+/'系统所有用例'/
+usecase 登录注册 as registeredAndLogin
+usecase 浏览酒店 as browseHotel
+usecase 创建订单 as createOrder
+usecase 修改订单 as modifyOrder
+usecase 查看订单 as checkOrder
+usecase 取消订单 as cancelOrder
+usecase 评价酒店 as commentHotel<<weight1>>
+note left of commentHotel:无论使用户换是管理者都很关心这个
+usecase 客房管理 as roomManagement
+usecase 用户管理 as useManagement
+usecase 酒店管理 as hotelManagement
+usecase 订单管理 as orderManagement
+usecase 系统管理 as systemManagement
+
+
+/'用户相关的所有用例（行为）'/
+user -down-> (registeredAndLogin)
+user -down-> (browseHotel)
+user -down-> (createOrder)
+user -down-> (modifyOrder)
+user -down-> (checkOrder)
+user -down-> (cancelOrder)
+user -down-> (commentHotel)
+
+/'平台管理员的所有用例（行为）'/
+platformManager -up-> (browseHotel)
+platformManager -up-> (checkOrder)
+platformManager -up-> (commentHotel)
+platformManager --> (manager)
+
+
+platformManager -down-> (useManagement)
+platformManager -down-> (hotelManagement)
+platformManager -down-> (orderManagement)
+platformManager -down-> (systemManagement)
+
+/'酒店管理员的所有用例（行为）'/
+hotelManager -up-> (checkOrder)
+hotelManager -up-> (commentHotel)
+hotelManager -left-> (roomManagement)
+hotelManager -right-> (manager)
+
+@enduml
